@@ -109,8 +109,8 @@ free library of songs in MIDI format.
 ### Step 2: Convert MIDI to M300 gcode
 
 Use the [MIDI to M300 Converter](https://www.layerfused.com/MIDI-M300) to
-convert your MIDI file to M300 gcode commands. Leave all settings at their
-defaults and copy the output to a new `.gcode` file.
+convert your MIDI file to M300 gcode commands. Experient which track(s) you want the buzzer to play.
+Click generate and copy the output to a new `.gcode` file.
 
 ### Step 3: Copy to the printer
 
