@@ -33,20 +33,17 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
    sh /useremain/home/rinkhals/apps/71-buzzer-service/app.sh start
 ```
 
-## Klipper setup (on BTT Pi2 or external Klipper host)
+## Klipper Setup (on BTT Pi2 or external Klipper host)
 
 1. Copy `klipper/buzzer.cfg` and `klipper/buzzer_tunes.cfg` to your Klipper
    config directory (e.g. `~/printer_data/config/`)
-
-2. Edit `buzzer.cfg` and replace `PRINTER_IP` with your printer's IP address
-
+2. Edit `buzzer.cfg` and replace `192.168.1.15` with your printer's IP address
+   in both `gcode_shell_command` blocks
 3. Add to your `printer.cfg`:
 ```ini
    [include buzzer.cfg]
 ```
-
 4. Restart Klipper
-
 5. Test from the Mainsail/Fluidd console:
 ```
    M300 S1000 P500
@@ -71,10 +68,10 @@ multiple `M300` calls together.
 
 ### How tunes work
 
-Long tunes like `TUNE_MARIO` use a non-blocking method — Klipper sends the
-tune name to the printer and returns instantly. The printer looks up the tune
-file by name in the `tunes/` directory and plays it entirely on its own SoC
-using a Python player, so printing is never blocked during playback.
+Long tunes use a non-blocking method — Klipper sends the tune name to the
+printer and returns instantly. The printer looks up the tune file by name in
+the `tunes/` directory and plays it entirely on its own SoC using a Python
+player, so printing is never blocked during playback.
 
 ### Built-in tune macros
 
@@ -85,28 +82,7 @@ using a Python player, so printing is never blocked during playback.
 | `TUNE_BEEP` | Blocking | Single short beep |
 | `TUNE_READY` | Blocking | Printer homed and ready |
 | `TUNE_MARIO` | Non-blocking | Mario theme |
-
-### Adding your own tunes
-
-To add a new long tune:
-
-1. Create `<name>.py` in `tunes/` on the printer with a `notes` array:
-```python
-notes = [
-    (frequency_hz, duration_seconds),
-    (660, 0.1),
-    (0, 0.1),   # 0 Hz = silence
-    ...
-]
-```
-2. Add a macro to `buzzer_tunes.cfg` on the Pi2:
-```ini
-[gcode_macro TUNE_MYNAME]
-description: My custom tune
-gcode:
-    PLAY_TUNE TUNE=myname
-```
-3. Restart Klipper — no changes needed to any other files.
+| `STOP_TUNE` | — | Stop any currently playing tune |
 
 ### Suggested macro hooks
 
@@ -122,17 +98,77 @@ TUNE_PRINT_FAILED
 TUNE_READY
 ```
 
+---
+
+## Adding Custom Tunes
+
+### Step 1: Get a MIDI file
+
+Download MIDI files from [BitMidi](https://bitmidi.com/) — it has a large
+free library of songs in MIDI format.
+
+### Step 2: Convert MIDI to M300 gcode
+
+Use the [MIDI to M300 Converter](https://www.layerfused.com/MIDI-M300) to
+convert your MIDI file to M300 gcode commands. Leave all settings at their
+defaults and copy the output to a new `.gcode` file.
+
+### Step 3: Copy to the printer
+
+Copy the new `.gcode` file to the `tunes/` directory on the printer via
+SSH/SFTP (MobaXterm):
+```
+/useremain/home/rinkhals/apps/71-buzzer-service/tunes/mysong.gcode
+```
+
+### Step 4: Add a Klipper macro
+
+Add to `buzzer_tunes.cfg` on the Pi2:
+```ini
+[gcode_macro TUNE_MYSONG]
+description: Play my custom song
+gcode:
+    PLAY_TUNE TUNE=mysong
+```
+
+### Step 5: Restart Klipper
+
+That's it — no other files need to be changed. Call `TUNE_MYSONG` from the
+Mainsail console to play it.
+
+---
+
 ## How it works
 
 The buzzer service runs as a Rinkhals app on the printer's SoC. It listens on
-TCP port 7777 for `FREQ MS` commands and drives the PWM buzzer directly via
+TCP port 7777 for commands and drives the PWM buzzer directly via
 `/sys/devices/platform/ff350000.pwm/pwm/pwmchip0/pwm0`.
 
-Klipper uses `gcode_shell_command` to send each M300 tone over the network via
-`socat`, which is already present on both hosts as part of the tunneled-klipper
-setup.
+Two types of commands are supported:
+
+- **`FREQ DUR`** — plays a single tone at the given frequency (Hz) and
+  duration (ms). Used by M300 for short blocking tones.
+- **`TUNENAME`** — looks up `tunes/<tunename>.gcode` on the printer and plays
+  it non-blocking via a Python player.
+
+Klipper uses `gcode_shell_command` to send commands over the network via
+`socat`, which is already present on both hosts as part of the
+tunneled-klipper setup.
+
+## Resource Usage
+
+The buzzer service is extremely lightweight on the Kobra S1 SoC:
+
+- **Idle**: ~3.8MB RAM, 0% CPU
+- **During a beep**: brief spike while the shell executes, immediately returns to idle
+- **During a tune**: Python player uses ~6MB RAM for the duration of the tune
+
+This is comparable to the existing socat tunnel processes and has no
+measurable impact on print performance.
 
 ## Credits
 
 - [Rinkhals](https://github.com/jbatonnet/Rinkhals) by jbatonnet
 - [vanilla-klipper-swu / tunneled-klipper](https://github.com/Kobra-S1/vanilla-klipper-swu)
+- [BitMidi](https://bitmidi.com/) — MIDI file library
+- [MIDI to M300 Converter](https://www.layerfused.com/MIDI-M300) by LayerFused
