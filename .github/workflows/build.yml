@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,14 +17,15 @@ jobs:
       - name: Build SWU
         run: |
           chmod +x build/build-swu.sh
+          mkdir -p build/dist
           docker run --rm \
             -e KOBRA_MODEL_CODE=KS1 \
             -v ${{ github.workspace }}/build:/build \
             -v ${{ github.workspace }}/apps:/apps \
             ghcr.io/jbatonnet/rinkhals/build \
-            /build/build-swu.sh "apps/buzzer-service"
+            /build/build-swu.sh "/apps/buzzer-service"
 
       - name: Upload SWU as release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: build/buzzer-service.swu
+          files: build/dist/update.swu
