@@ -15,6 +15,7 @@ jobs:
         run: |
           chmod +x build/build-swu.sh
           docker run --rm \
+            -e KOBRA_MODEL_CODE=KS1 \
             -v ${{ github.workspace }}/build:/build \
             -v ${{ github.workspace }}/apps:/apps \
             ghcr.io/jbatonnet/rinkhals/build \
