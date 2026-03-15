@@ -120,7 +120,7 @@ Click generate and copy the output to a new `.gcode` file.
 Copy the new `.gcode` file to the `tunes/` directory on the printer via
 SSH/SFTP (MobaXterm):
 ```
-/useremain/home/rinkhals/apps/71-buzzer-service/tunes/mysong.gcode
+/useremain/home/rinkhals/apps/buzzer-service/tunes/mysong.gcode
 ```
 
 ### Step 4: Add a Klipper macro
