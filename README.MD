@@ -19,7 +19,7 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 ### Option 1: SWU (recommended)
 
 1. Download `update.swu` from the [Releases](../../releases) page
-2. Make sure it's name as `update.swu`
+2. Make sure it's named as `update.swu`
 3. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
 4. Plug the USB drive into the printer — it installs automatically
 5. Enable the app via the Rinkhals touch UI or by rebooting
@@ -27,17 +27,17 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 ### Option 2: Manual (SSH/SFTP)
 
 1. Connect to the printer via SSH or SFTP (user: `root`, password: `rockchip`)
-2. Copy the `apps/71-buzzer-service/` directory to `/useremain/home/rinkhals/apps/` on the printer
+2. Copy the `apps/buzzer-service/` directory to `/useremain/home/rinkhals/apps/` on the printer
 3. Reboot or start manually:
 ```sh
-   sh /useremain/home/rinkhals/apps/71-buzzer-service/app.sh start
+   sh /useremain/home/rinkhals/apps/buzzer-service/app.sh start
 ```
 
 ## Klipper Setup (on BTT Pi2 or external Klipper host)
 
 1. Copy `klipper/buzzer.cfg` and `klipper/buzzer_tunes.cfg` to your Klipper
    config directory (e.g. `~/printer_data/config/`)
-2. Edit `buzzer.cfg` and replace `192.168.1.15` with your printer's IP address
+2. Edit `buzzer.cfg` and replace `[PRINTER_IP]` with your printer's IP address
    in both `gcode_shell_command` blocks
 3. Add to your `printer.cfg`:
 ```ini
