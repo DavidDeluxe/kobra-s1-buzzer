@@ -5,13 +5,13 @@ via [Rinkhals](https://github.com/jbatonnet/Rinkhals) and
 [tunneled-klipper](https://github.com/Kobra-S1/vanilla-klipper-swu).
 
 Drives the printer's built-in buzzer at `/sys/devices/platform/ff350000.pwm`
-over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
+over a TCP socket, triggered by M300 gcode from Klipper running on a RPi4/5, BTT Pi2
 (or any external Klipper host).
 
 ## Requirements
 
 - Anycubic Kobra S1 with Rinkhals installed
-- Vanilla Klipper running on an external host (Raspberry Pi 4/5, BTT Pi2 or similar) via tunneled-klipper
+- Vanilla Klipper running on an external host (RPi 4/5, BTT Pi2 or similar) via tunneled-klipper
 - Both printer and Klipper host on the same network
 
 ## Installation
@@ -21,8 +21,8 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 1. Download `update.swu` from the [Releases](../../releases) page
 2. Make sure it's named as `update.swu`
 3. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
-4. Plug the USB drive into the printer — it installs automatically
-5. Enable the app via the Rinkhals touch UI or by rebooting
+4. Plug the USB drive into the printer — it installs automatically in a few seconds
+5. Enable the app via the Rinkhals touch UI or by rebooting. Service shouls start automatically.
 
 ### Option 2: Manual (SSH/SFTP)
 
@@ -33,12 +33,11 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
    sh /useremain/home/rinkhals/apps/buzzer-service/app.sh start
 ```
 
-## Klipper Setup (on BTT Pi2 or external Klipper host)
+## Klipper Setup (on RPi4/5, BTT Pi2 or other Klipper host)
 
-1. Copy `klipper/buzzer.cfg` and `klipper/buzzer_tunes.cfg` to your Klipper
-   config directory (e.g. `~/printer_data/config/`)
-2. Edit `buzzer.cfg` and replace `[PRINTER_IP]` with your printer's IP address
-   in both `gcode_shell_command` blocks
+1. Copy `klipper/buzzer.cfg` to your Klipper config directory (e.g. `~/printer_data/config/`)
+2. Edit `buzzer.cfg` and replace `[PRINTER_IP]` with your printer's IP (not Klipper host) address
+   in all 3 `gcode_shell_command` blocks (buzzer_simple_beep, buzzer_tune, buzzer_stop)
 3. Add to your `printer.cfg`:
 ```ini
    [include buzzer.cfg]
@@ -123,7 +122,7 @@ SSH/SFTP (MobaXterm):
 
 ### Step 4: Add a Klipper macro
 
-Add to `buzzer_tunes.cfg` on the Pi2:
+Add to the end of`buzzer.cfg` on your klipper host:
 ```ini
 [gcode_macro TUNE_MYSONG]
 description: Play my custom song
