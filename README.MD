@@ -18,8 +18,8 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 
 ### Option 1: SWU (recommended)
 
-1. Download `71-buzzer-service.swu` from the [Releases](../../releases) page
-2. Rename it to `update.swu`
+1. Download `update.swu` from the [Releases](../../releases) page
+2. Make sure it's name as `update.swu`
 3. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
 4. Plug the USB drive into the printer — it installs automatically
 5. Enable the app via the Rinkhals touch UI or by rebooting
