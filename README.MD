@@ -11,7 +11,7 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 ## Requirements
 
 - Anycubic Kobra S1 with Rinkhals installed
-- Vanilla Klipper running on an external host (BTT Pi2 or similar) via tunneled-klipper
+- Vanilla Klipper running on an external host (Raspberry Pi 4/5, BTT Pi2 or similar) via tunneled-klipper
 - Both printer and Klipper host on the same network
 
 ## Installation
