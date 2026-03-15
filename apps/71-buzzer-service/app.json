@@ -1,0 +1,5 @@
+{
+    "name": "buzzer-server",
+    "version": "1.0.0",
+    "description": "TCP buzzer server for M300 support via PWM"
+}
