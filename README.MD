@@ -81,6 +81,9 @@ player, so printing is never blocked during playback.
 | `TUNE_BEEP` | Blocking | Single short beep |
 | `TUNE_READY` | Blocking | Printer homed and ready |
 | `TUNE_MARIO` | Non-blocking | Mario theme |
+| `TUNE_PIRATES`| Non-blocking | Pirates of the Caribbean theme |
+| `TUNE_RICKROLL`| Non-blocking | Definitely not a Rickroll |
+| `TUNE_SANDSTORM` | Non-blocking | Darude - Sandstorm |
 | `STOP_TUNE` | — | Stop any currently playing tune |
 
 ### Suggested macro hooks
