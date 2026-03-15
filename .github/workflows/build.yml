@@ -13,6 +13,7 @@ jobs:
 
       - name: Build SWU
         run: |
+          chmod +x build/build-swu.sh
           docker run --rm \
             -v ${{ github.workspace }}/build:/build \
             -v ${{ github.workspace }}/apps:/apps \
