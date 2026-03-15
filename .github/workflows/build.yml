@@ -19,9 +19,9 @@ jobs:
             -v ${{ github.workspace }}/build:/build \
             -v ${{ github.workspace }}/apps:/apps \
             ghcr.io/jbatonnet/rinkhals/build \
-            /build/build-swu.sh "71-buzzer-service"
+            /build/build-swu.sh "apps/buzzer-service"
 
       - name: Upload SWU as release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: build/71-buzzer-service.swu
+          files: build/buzzer-service.swu
