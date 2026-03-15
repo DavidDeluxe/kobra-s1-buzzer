@@ -1,7 +1,7 @@
 #!/bin/sh
 read L
 COMMAND=$(echo $L | cut -d' ' -f1)
-TUNES_DIR=/useremain/home/rinkhals/apps/71-buzzer-service/tunes
+TUNES_DIR=/useremain/home/rinkhals/apps/buzzer-service/tunes
 SECOND=$(echo $L | cut -d' ' -f2)
 PIDFILE=/tmp/buzzer_player.pid
 
@@ -26,16 +26,16 @@ if [ "$SECOND" = "$COMMAND" ] || [ -z "$SECOND" ]; then
 
     if [ -f "${TUNES_DIR}/${TUNE_NAME}.py" ]; then
         stop_tune
-        python3 /useremain/home/rinkhals/apps/71-buzzer-service/player.py ${TUNES_DIR}/${TUNE_NAME}.py &
+        python3 /useremain/home/rinkhals/apps/buzzer-service/player.py ${TUNES_DIR}/${TUNE_NAME}.py &
         echo $! > $PIDFILE
     elif [ -f "${TUNES_DIR}/${TUNE_NAME}.gcode" ]; then
         stop_tune
-        python3 /useremain/home/rinkhals/apps/71-buzzer-service/player.py ${TUNES_DIR}/${TUNE_NAME}.gcode &
+        python3 /useremain/home/rinkhals/apps/buzzer-service/player.py ${TUNES_DIR}/${TUNE_NAME}.gcode &
         echo $! > $PIDFILE
     else
         echo "ERROR: No tune file found for '${TUNE_NAME}'" >&2
         exit 1
     fi
 else
-    sh /useremain/home/rinkhals/apps/71-buzzer-service/buzzer.sh $COMMAND $SECOND
+    sh /useremain/home/rinkhals/apps/buzzer-service/buzzer.sh $COMMAND $SECOND
 fi
