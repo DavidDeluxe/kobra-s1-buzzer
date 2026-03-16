@@ -1,5 +1,15 @@
 {
+    "$version": "1",
+    
     "name": "buzzer-server",
-    "version": "1.0.0",
-    "description": "TCP buzzer server for M300 support via PWM"
+    "version": "1.0.2",
+    "description": "TCP buzzer server for M300 support via PWM",
+    
+    "url": "https://github.com/DavidDeluxe/kobra-s1-buzzer",
+    
+    "requirements":
+    {
+        "cpu": 5,
+        "memory": 6
+    }
 }
