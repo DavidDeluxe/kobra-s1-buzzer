@@ -11,13 +11,13 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 ## Requirements
 
 - Anycubic Kobra S1 with Rinkhals installed
-- Vanilla Klipper running on an external host (BTT Pi2 or similar) via tunneled-klipper
+- Vanilla Klipper running on an external host (RPi 4/5, BTT Pi2 or similar) via tunneled-klipper
 - Both printer and Klipper host on the same network
 - `gcode_shell_command` extension installed on the Klipper host (see below)
 
 ## Installing gcode_shell_command
 
-The `gcode_shell_command` extension is required on your Klipper host (BTT Pi2)
+The `gcode_shell_command` extension is required on your Klipper host (RPi 4/5, BTT Pi2)
 to allow Klipper macros to send commands to the buzzer service over the network.
 
 Install it using [KIAUH](https://github.com/dw-0/kiauh) (Klipper Installation
@@ -57,16 +57,14 @@ cd ~ && git clone https://github.com/dw-0/kiauh.git
    sh /useremain/home/rinkhals/apps/buzzer-service/app.sh start
 ```
 
-## Klipper Setup (on BTT Pi2 or external Klipper host)
+## Klipper Setup (on RPi 4/5, BTT Pi2 or external Klipper host)
 
-1. Copy `klipper/buzzer.cfg` and `klipper/buzzer_tunes.cfg` to your Klipper
-   config directory (e.g. `~/printer_data/config/`)
-2. Edit `buzzer.cfg` and replace `192.168.1.15` with your printer's IP address
-   in both `gcode_shell_command` blocks
+1. Copy `klipper/buzzer.cfg` to your Klipper config directory (e.g. `~/printer_data/config/`)
+2. Edit `buzzer.cfg` and replace `[PRINTER_IP]` with your printer's IP address
+   in all 3  `gcode_shell_command` blocks at the top of the config file
 3. Add to your `printer.cfg`:
 ```ini
    [include buzzer.cfg]
-   [include buzzer_tunes.cfg]
 ```
 4. Restart Klipper
 5. Test from the Mainsail/Fluidd console:
@@ -148,7 +146,7 @@ SSH/SFTP (MobaXterm):
 
 ### Step 4: Add a Klipper macro
 
-Add to `buzzer_tunes.cfg` on the Pi2:
+Add to the end of `buzzer.cfg` on the RPi 4/5, BTT Pi2:
 ```ini
 [gcode_macro TUNE_MYSONG]
 description: Play my custom song
