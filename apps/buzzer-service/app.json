@@ -1,7 +1,7 @@
 {
     "$version": "1",
     
-    "name": "buzzer-server",
+    "name": "buzzer-service",
     "version": "1.0.2",
     "description": "TCP buzzer server for M300 support via PWM",
     

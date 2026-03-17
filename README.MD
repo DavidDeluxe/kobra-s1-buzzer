@@ -5,24 +5,48 @@ via [Rinkhals](https://github.com/jbatonnet/Rinkhals) and
 [tunneled-klipper](https://github.com/Kobra-S1/vanilla-klipper-swu).
 
 Drives the printer's built-in buzzer at `/sys/devices/platform/ff350000.pwm`
-over a TCP socket, triggered by M300 gcode from Klipper running on a RPi4/5, BTT Pi2
+over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
 (or any external Klipper host).
 
 ## Requirements
 
 - Anycubic Kobra S1 with Rinkhals installed
-- Vanilla Klipper running on an external host (RPi 4/5, BTT Pi2 or similar) via tunneled-klipper
+- Vanilla Klipper running on an external host (BTT Pi2 or similar) via tunneled-klipper
 - Both printer and Klipper host on the same network
+- `gcode_shell_command` extension installed on the Klipper host (see below)
+
+## Installing gcode_shell_command
+
+The `gcode_shell_command` extension is required on your Klipper host (BTT Pi2)
+to allow Klipper macros to send commands to the buzzer service over the network.
+
+Install it using [KIAUH](https://github.com/dw-0/kiauh) (Klipper Installation
+And Update Helper):
+
+1. SSH into your BTT Pi2
+2. Run KIAUH:
+```sh
+   ~/kiauh/kiauh.sh
+```
+3. Select **4) Advanced**
+4. Select **8) G-Code Shell Command**
+5. Confirm the installation
+6. Restart Klipper when prompted
+
+If KIAUH is not installed, install it first:
+```sh
+cd ~ && git clone https://github.com/dw-0/kiauh.git
+~/kiauh/kiauh.sh
+```
 
 ## Installation
 
 ### Option 1: SWU (recommended)
 
 1. Download `update.swu` from the [Releases](../../releases) page
-2. Make sure it's named as `update.swu`
-3. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
-4. Plug the USB drive into the printer — it installs automatically in a few seconds
-5. Enable the app via the Rinkhals touch UI or by rebooting. Service shouls start automatically.
+2. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
+3. Plug the USB drive into the printer — it installs automatically
+4. Enable the app via the Rinkhals touch UI or by rebooting
 
 ### Option 2: Manual (SSH/SFTP)
 
@@ -33,14 +57,16 @@ over a TCP socket, triggered by M300 gcode from Klipper running on a RPi4/5, BTT
    sh /useremain/home/rinkhals/apps/buzzer-service/app.sh start
 ```
 
-## Klipper Setup (on RPi4/5, BTT Pi2 or other Klipper host)
+## Klipper Setup (on BTT Pi2 or external Klipper host)
 
-1. Copy `klipper/buzzer.cfg` to your Klipper config directory (e.g. `~/printer_data/config/`)
-2. Edit `buzzer.cfg` and replace `[PRINTER_IP]` with your printer's IP (not Klipper host) address
-   in all 3 `gcode_shell_command` blocks (buzzer_simple_beep, buzzer_tune, buzzer_stop)
+1. Copy `klipper/buzzer.cfg` and `klipper/buzzer_tunes.cfg` to your Klipper
+   config directory (e.g. `~/printer_data/config/`)
+2. Edit `buzzer.cfg` and replace `192.168.1.15` with your printer's IP address
+   in both `gcode_shell_command` blocks
 3. Add to your `printer.cfg`:
 ```ini
    [include buzzer.cfg]
+   [include buzzer_tunes.cfg]
 ```
 4. Restart Klipper
 5. Test from the Mainsail/Fluidd console:
@@ -76,15 +102,12 @@ player, so printing is never blocked during playback.
 
 | Macro | Type | Description |
 |---|---|---|
-| `TUNE_PRINT_DONE` | Blocking | Play at end of print |
-| `TUNE_PRINT_FAILED` | Blocking | Play on cancel/failure |
 | `TUNE_BEEP` | Blocking | Single short beep |
 | `TUNE_READY` | Blocking | Printer homed and ready |
-| `TUNE_MARIO` | Non-blocking | Mario theme |
-| `TUNE_PIRATES`| Non-blocking | Pirates of the Caribbean theme |
-| `TUNE_RICKROLL`| Non-blocking | Definitely not a Rickroll |
-| `TUNE_SANDSTORM` | Non-blocking | Darude - Sandstorm |
+| `TUNE_PRINT_DONE` | Blocking | Play at end of print |
+| `TUNE_PRINT_FAILED` | Blocking | Play on cancel/failure |
 | `STOP_TUNE` | — | Stop any currently playing tune |
+| `TUNE_[...]` | Non-blocking | Preset tunes below |
 
 ### Suggested macro hooks
 
@@ -112,12 +135,12 @@ free library of songs in MIDI format.
 ### Step 2: Convert MIDI to M300 gcode
 
 Use the [MIDI to M300 Converter](https://www.layerfused.com/MIDI-M300) to
-convert your MIDI file to M300 gcode commands. Experient which track(s) you want the buzzer to play.
-Click generate and copy the output to a new `.gcode` file.
+convert your MIDI file to M300 gcode commands. Leave all settings at their
+defaults and download the output as a `.gcode` file.
 
 ### Step 3: Copy to the printer
 
-Copy the new `.gcode` file to the `tunes/` directory on the printer via
+Copy the `.gcode` file to the `tunes/` directory on the printer via
 SSH/SFTP (MobaXterm):
 ```
 /useremain/home/rinkhals/apps/buzzer-service/tunes/mysong.gcode
@@ -125,7 +148,7 @@ SSH/SFTP (MobaXterm):
 
 ### Step 4: Add a Klipper macro
 
-Add to the end of`buzzer.cfg` on your klipper host:
+Add to `buzzer_tunes.cfg` on the Pi2:
 ```ini
 [gcode_macro TUNE_MYSONG]
 description: Play my custom song
@@ -174,3 +197,4 @@ measurable impact on print performance.
 - [vanilla-klipper-swu / tunneled-klipper](https://github.com/Kobra-S1/vanilla-klipper-swu)
 - [BitMidi](https://bitmidi.com/) — MIDI file library
 - [MIDI to M300 Converter](https://www.layerfused.com/MIDI-M300) by LayerFused
+- [KIAUH](https://github.com/dw-0/kiauh) — Klipper Installation And Update Helper
