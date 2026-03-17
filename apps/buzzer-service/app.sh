@@ -6,8 +6,8 @@ APP_ROOT=$(dirname "$(readlink -f "$0")")
 chmod +x ${APP_ROOT}/buzzer.sh
 chmod +x ${APP_ROOT}/buzzer_wrapper.sh
 
-mkdir -p /tmp/rinkhals
-LOG=/tmp/rinkhals/buzzer-service.log
+mkdir -p $RINKHALS_LOGS
+LOG=$RINKHALS_LOGS/buzzer-service.log
 
 wait_and_start() {
     echo "$(date): wait_and_start began" >> $LOG
@@ -22,7 +22,7 @@ wait_and_start() {
             echo "$(date): socat started PID $!" >> $LOG
             return 0
         fi
-        sleep 2
+        usleep 2000000
         ATTEMPTS=$((ATTEMPTS + 1))
         echo "$(date): attempt $ATTEMPTS - waiting for ttyACM..." >> $LOG
     done
@@ -35,12 +35,12 @@ case "$1" in
         wait_and_start &
         ;;
     stop)
-        kill $(ps | grep "TCP-LISTEN:7777" | grep -v grep | awk '{print $1}') 2>/dev/null
+        kill_by_port 7777
         echo 0 > /sys/devices/platform/ff350000.pwm/pwm/pwmchip0/pwm0/enable
         echo "$(date): app.sh stop called" >> $LOG
         ;;
     status)
-        PIDS=$(get_pids socat)
-        report_status "$PIDS"
+        PIDS=$(get_by_name "TCP-LISTEN:7777")
+        report_status "$APP_STATUS_STARTED" "$PIDS" "$LOG"
         ;;
 esac
