@@ -5,8 +5,8 @@ via [Rinkhals](https://github.com/jbatonnet/Rinkhals) and
 [tunneled-klipper](https://github.com/Kobra-S1/vanilla-klipper-swu).
 
 Drives the printer's built-in buzzer at `/sys/devices/platform/ff350000.pwm`
-over a TCP socket, triggered by M300 gcode from Klipper running on a BTT Pi2
-(or any external Klipper host).
+over a TCP socket, triggered by M300 gcode from Klipper running on a RPi 4/5, 
+BTT Pi2 (or any external Klipper host).
 
 ## Requirements
 
