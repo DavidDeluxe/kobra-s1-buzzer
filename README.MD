@@ -43,10 +43,11 @@ cd ~ && git clone https://github.com/dw-0/kiauh.git
 
 ### Option 1: SWU (recommended)
 
-1. Download `update.swu` from the [Releases](../../releases) page
-2. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
-3. Plug the USB drive into the printer — it installs automatically
-4. Enable the app via the Rinkhals touch UI or by rebooting
+1. Download `60-buzzer-service.swu` from the [Releases](../../releases) page
+2. Rename it to `update.swu`
+3. Copy it to a FAT32 USB drive in a directory named `aGVscF9zb3Nf`
+4. Plug the USB drive into the printer — it installs automatically
+5. Enable the app via the Rinkhals touch UI or by rebooting
 
 ### Option 2: Manual (SSH/SFTP)
 
