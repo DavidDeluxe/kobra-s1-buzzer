@@ -3,4 +3,4 @@
 *.cfg text eol=lf
 *.json text eol=lf
 
-apps/tunes/*.gcode -linguist-detectable
+apps/tunes/*.gcode -linguist-detectable linguist-generated
